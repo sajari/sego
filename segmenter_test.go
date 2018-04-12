@@ -1,6 +1,8 @@
 package sego
 
 import (
+	"bufio"
+	"os"
 	"testing"
 )
 
@@ -50,6 +52,36 @@ func TestSegment(t *testing.T) {
 	expect(t, "18", segments[2].end)
 	expect(t, "18", segments[3].start)
 	expect(t, "24", segments[3].end)
+}
+
+var segments []Segment
+
+func BenchmarkSegment(b *testing.B) {
+	var seg Segmenter
+	seg.LoadDictionary("data/dictionary.txt")
+
+	file, err := os.Open("testdata/bailuyuan.txt")
+	if err != nil {
+		b.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	size := 0
+	lines := [][]byte{}
+	for scanner.Scan() {
+		text := scanner.Text()
+		content := []byte(text)
+		size += len(content)
+		lines = append(lines, content)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for _, l := range lines {
+			segments = seg.Segment(l)
+		}
+	}
 }
 
 func TestLargeDictionary(t *testing.T) {
