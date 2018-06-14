@@ -8,7 +8,7 @@ import (
 func expect(t *testing.T, expect string, actual interface{}) {
 	actualString := fmt.Sprint(actual)
 	if expect != actualString {
-		t.Errorf("期待值=\"%s\", 实际=\"%s\"", expect, actualString)
+		t.Errorf("Expected value = \"%s\", Actual =\"%s\"", expect, actualString)
 	}
 }
 
@@ -22,15 +22,7 @@ func printTokens(tokens []*Token, numTokens int) (output string) {
 	return
 }
 
-func toWords(strings ...string) []Text {
-	words := []Text{}
-	for _, s := range strings {
-		words = append(words, []byte(s))
-	}
-	return words
-}
-
-func bytesToString(bytes []Text) (output string) {
+func bytesToString(bytes Text) (output string) {
 	for _, b := range bytes {
 		output += (string(b) + "/")
 	}
