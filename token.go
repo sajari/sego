@@ -1,15 +1,47 @@
 package sego
 
+import (
+	"bytes"
+	"strings"
+)
+
 // 字串类型，可以用来表达
 //	1. 一个字元，比如"中"又如"国", 英文的一个字元是一个词
 //	2. 一个分词，比如"中国"又如"人口"
 //	3. 一段文字，比如"中国有十三亿人口"
-type Text []byte
+type Text [][]byte
+
+// Size returns the number of bytes that Text occupies
+func (t Text) Size() (size int) {
+	for _, w := range t {
+		size += len(w)
+	}
+	return size
+}
+
+// Bytes returns ...
+func (t Text) Bytes() []byte {
+	var buf bytes.Buffer
+	buf.Grow(t.Size())
+	for _, w := range t {
+		buf.Write(w)
+	}
+	return buf.Bytes()
+}
+
+func (t Text) String() string {
+	var str strings.Builder
+	str.Grow(t.Size())
+	for _, w := range t {
+		str.Write(w)
+	}
+	return str.String()
+}
 
 // 一个分词
 type Token struct {
 	// 分词的字串，这实际上是个字元数组
-	text []Text
+	text Text
 
 	// 分词在语料库中的词频
 	frequency int
@@ -23,12 +55,12 @@ type Token struct {
 	pos string
 
 	// 该分词文本的进一步分词划分，见Segments函数注释。
-	segments []*Segment
+	segments Segments
 }
 
 // 返回分词文本
 func (token *Token) Text() string {
-	return textSliceToString(token.text)
+	return token.text.String()
 }
 
 // 返回分词在语料库中的词频
@@ -45,6 +77,6 @@ func (token *Token) Pos() string {
 // 有两个子分词"中华人民共和国"和"中央人民政府"。子分词也可以进一步有子分词
 // 形成一个树结构，遍历这个树就可以得到该分词的所有细致分词划分，这主要
 // 用于搜索引擎对一段文本进行全文搜索。
-func (token *Token) Segments() []*Segment {
+func (token *Token) Segments() Segments {
 	return token.segments
 }

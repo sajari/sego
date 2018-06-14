@@ -1,15 +1,14 @@
-// 测试sego并行分词速度
-
 package main
 
 import (
 	"bufio"
 	"fmt"
-	"github.com/huichen/sego"
 	"log"
 	"os"
 	"runtime"
 	"time"
+
+	"github.com/sajari/sego"
 )
 
 var (
@@ -28,20 +27,19 @@ func worker() {
 }
 
 func main() {
-	// 将线程数设置为CPU数
+	// Set the number of threads to the number of CPUs
 	runtime.GOMAXPROCS(numThreads)
 
-	// 载入词典
-	segmenter.LoadDictionary("../data/dictionary.txt")
+	if err := segmenter.LoadDictionary("../../data/dictionary.txt"); err != nil {
+		log.Fatal(err)
+	}
 
-	// 打开将要分词的文件
-	file, err := os.Open("../testdata/bailuyuan.txt")
+	file, err := os.Open("../../testdata/bailuyuan.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
 
-	// 逐行读入
 	scanner := bufio.NewScanner(file)
 	size := 0
 	lines := [][]byte{}

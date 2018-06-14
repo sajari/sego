@@ -31,7 +31,7 @@ func (dict *Dictionary) TotalFrequency() int64 {
 
 // 向词典中加入一个分词
 func (dict *Dictionary) addToken(token Token) {
-	bytes := textSliceToBytes(token.text)
+	bytes := token.text.Bytes()
 	_, err := dict.trie.Get(bytes)
 	if err == nil {
 		return
@@ -47,7 +47,7 @@ func (dict *Dictionary) addToken(token Token) {
 
 // 在词典中查找和字元组words可以前缀匹配的所有分词
 // 返回值为找到的分词数
-func (dict *Dictionary) lookupTokens(words []Text, tokens []*Token) (numOfTokens int) {
+func (dict *Dictionary) lookupTokens(words Text, tokens []*Token) (numOfTokens int) {
 	var id, value int
 	var err error
 	for _, word := range words {
@@ -61,5 +61,5 @@ func (dict *Dictionary) lookupTokens(words []Text, tokens []*Token) (numOfTokens
 			numOfTokens++
 		}
 	}
-	return
+	return numOfTokens
 }

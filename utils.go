@@ -1,7 +1,6 @@
 package sego
 
 import (
-	"bytes"
 	"fmt"
 )
 
@@ -22,30 +21,30 @@ func SegmentsToString(segs []Segment, searchMode bool) (output string) {
 	} else {
 		for _, seg := range segs {
 			output += fmt.Sprintf(
-				"%s/%s ", textSliceToString(seg.token.text), seg.token.pos)
+				"%s/%s ", seg.token.text.String(), seg.token.pos)
 		}
 	}
 	return
 }
 
-func tokenToString(token *Token) (output string) {
-	hasOnlyTerminalToken := true
-	for _, s := range token.segments {
-		if len(s.token.segments) > 1 {
-			hasOnlyTerminalToken = false
-		}
-	}
+// func tokenToString(token *Token) (output string) {
+// 	hasOnlyTerminalToken := true
+// 	for _, s := range token.segments {
+// 		if len(s.token.segments) > 1 {
+// 			hasOnlyTerminalToken = false
+// 		}
+// 	}
 
-	if !hasOnlyTerminalToken {
-		for _, s := range token.segments {
-			if s != nil {
-				output += tokenToString(s.token)
-			}
-		}
-	}
-	output += fmt.Sprintf("%s/%s ", textSliceToString(token.text), token.pos)
-	return
-}
+// 	if !hasOnlyTerminalToken {
+// 		for _, s := range token.segments {
+// 			if s != nil {
+// 				output += tokenToString(s.token)
+// 			}
+// 		}
+// 	}
+// 	output += fmt.Sprintf("%s/%s ", token.text.String(), token.pos)
+// 	return
+// }
 
 // 输出分词结果到一个字符串slice
 //
@@ -70,43 +69,19 @@ func SegmentsToSlice(segs []Segment, searchMode bool) (output []string) {
 	return
 }
 
-func tokenToSlice(token *Token) (output []string) {
-	hasOnlyTerminalToken := true
-	for _, s := range token.segments {
-		if len(s.token.segments) > 1 {
-			hasOnlyTerminalToken = false
-		}
-	}
-	if !hasOnlyTerminalToken {
-		for _, s := range token.segments {
-			output = append(output, tokenToSlice(s.token)...)
-		}
-	}
-	output = append(output, textSliceToString(token.text))
-	return output
-}
-
-// 将多个字元拼接一个字符串输出
-func textSliceToString(text []Text) string {
-	var output string
-	for _, word := range text {
-		output += string(word)
-	}
-	return output
-}
-
-// 返回多个字元的字节总长度
-func textSliceByteLength(text []Text) (length int) {
-	for _, word := range text {
-		length += len(word)
-	}
-	return
-}
-
-func textSliceToBytes(text []Text) []byte {
-	var buf bytes.Buffer
-	for _, word := range text {
-		buf.Write(word)
-	}
-	return buf.Bytes()
-}
+// func tokenToSlice(token *Token) (output []string) {
+// 	hasOnlyTerminalToken := true
+// 	for _, s := range token.segments {
+// 		if len(s.token.segments) > 1 {
+// 			hasOnlyTerminalToken = false
+// 		}
+// 	}
+// 	if !hasOnlyTerminalToken {
+// 		output = make([]string, 0, len(token.segments))
+// 		for _, s := range token.segments {
+// 			output = append(output, tokenToSlice(s.token)...)
+// 		}
+// 	}
+// 	output = append(output, token.text.String())
+// 	return output
+// }
