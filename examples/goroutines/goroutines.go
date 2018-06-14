@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/benhinchley/sego"
+	"github.com/sajari/sego"
 )
 
 var (

@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/benhinchley/sego"
+	"github.com/sajari/sego"
 )
 
 var (
