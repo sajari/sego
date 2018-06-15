@@ -1,11 +1,9 @@
 package sego
 
 import (
+	"bufio"
+	"os"
 	"testing"
-)
-
-var (
-	prodSeg = Segmenter{}
 )
 
 func TestSplit(t *testing.T) {
@@ -53,22 +51,54 @@ func TestSegment(t *testing.T) {
 }
 
 func TestLargeDictionary(t *testing.T) {
-	prodSeg.LoadDictionary("data/dictionary.txt")
-	expect(t, "中国/ns 人口/n ", SegmentsToString(prodSeg.Segment(
+	var seg Segmenter
+	seg.LoadDictionary("data/dictionary.txt")
+	expect(t, "中国/ns 人口/n ", SegmentsToString(seg.Segment(
 		[]byte("中国人口")), false))
 
-	expect(t, "中国/ns 人口/n ", SegmentsToString(prodSeg.internalSegment(
+	expect(t, "中国/ns 人口/n ", SegmentsToString(seg.internalSegment(
 		[]byte("中国人口"), false), false))
 
-	expect(t, "中国/ns 人口/n ", SegmentsToString(prodSeg.internalSegment(
+	expect(t, "中国/ns 人口/n ", SegmentsToString(seg.internalSegment(
 		[]byte("中国人口"), true), false))
 
-	expect(t, "中华人民共和国/ns 中央人民政府/nt ", SegmentsToString(prodSeg.internalSegment(
+	expect(t, "中华人民共和国/ns 中央人民政府/nt ", SegmentsToString(seg.internalSegment(
 		[]byte("中华人民共和国中央人民政府"), true), false))
 
-	expect(t, "中华人民共和国中央人民政府/nt ", SegmentsToString(prodSeg.internalSegment(
+	expect(t, "中华人民共和国中央人民政府/nt ", SegmentsToString(seg.internalSegment(
 		[]byte("中华人民共和国中央人民政府"), false), false))
 
-	expect(t, "中华/nz 人民/n 共和/nz 国/n 共和国/ns 人民共和国/nt 中华人民共和国/ns 中央/n 人民/n 政府/n 人民政府/nt 中央人民政府/nt 中华人民共和国中央人民政府/nt ", SegmentsToString(prodSeg.Segment(
+	expect(t, "中华/nz 人民/n 共和/nz 国/n 共和国/ns 人民共和国/nt 中华人民共和国/ns 中央/n 人民/n 政府/n 人民政府/nt 中央人民政府/nt 中华人民共和国中央人民政府/nt ", SegmentsToString(seg.Segment(
 		[]byte("中华人民共和国中央人民政府")), true))
+}
+
+var segments []Segment
+
+func BenchmarkSegment(b *testing.B) {
+	var seg Segmenter
+	if err := seg.LoadDictionary("data/dictionary.txt"); err != nil {
+		b.Fatal(err)
+	}
+
+	file, err := os.Open("testdata/bailuyuan.txt")
+	if err != nil {
+		b.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	size := 0
+	lines := [][]byte{}
+	for scanner.Scan() {
+		text := []byte(scanner.Text())
+		size += len(text)
+		lines = append(lines, text)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for _, l := range lines {
+			segments = seg.Segment(l)
+		}
+	}
 }
