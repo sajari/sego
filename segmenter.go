@@ -149,6 +149,13 @@ func (seg *Segmenter) processDictionary() {
 	}
 }
 
+// DefaultSegmenter creates a new Segmenter with the default dictionary loaded
+func DefaultSegmenter() *Segmenter {
+	var seg Segmenter
+	_ = seg.LoadDefaultDictionary()
+	return &seg
+}
+
 // 对文本分词
 //
 // 输入参数：
