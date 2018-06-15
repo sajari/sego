@@ -1,6 +1,10 @@
 package sego
 
-import "github.com/adamzy/cedar-go"
+//go:generate go-bindata -o data/dictionary.go -pkg data -prefix data data/dictionary.txt
+
+import (
+	"github.com/adamzy/cedar-go"
+)
 
 // Dictionary结构体实现了一个字串前缀树，一个分词可能出现在叶子节点也有可能出现在非叶节点
 type Dictionary struct {

@@ -3,15 +3,17 @@ package sego
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"math"
 	"os"
 	"strconv"
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/sajari/sego/data"
 )
 
 // Only read participles greater than or equal to this frequency from the dictionary file
@@ -41,10 +43,9 @@ func (seg *Segmenter) Dictionary() *Dictionary {
 //
 // The format of the dictionary is (one line per participle):
 // Word segmentation text Frequency Part of speech
-func (seg *Segmenter) LoadDictionary(files string) error {
+func (seg *Segmenter) LoadDictionary(files ...string) error {
 	seg.dict = NewDictionary()
-	for _, file := range strings.Split(files, ",") {
-		log.Printf("载入sego词典 %s", file)
+	for _, file := range files {
 		dictFile, err := os.Open(file)
 		defer dictFile.Close()
 		if err != nil {
@@ -62,8 +63,20 @@ func (seg *Segmenter) LoadDictionary(files string) error {
 // The format of the dictionary is (one line per participle):
 // Word segmentation text Frequency Part of speech
 func (seg *Segmenter) LoadDictionaryFromReader(r io.Reader) {
+	seg.dict = NewDictionary()
 	seg.tokenizeDictionary(r)
 	seg.processDictionary()
+}
+
+// LoadDefaultDictionary loads the default dictionary stored in data
+func (seg *Segmenter) LoadDefaultDictionary() error {
+	d, err := data.Asset("dictionary.txt")
+	if err != nil {
+		return err
+	}
+
+	seg.LoadDictionaryFromReader(bytes.NewReader(d))
+	return nil
 }
 
 func (seg *Segmenter) tokenizeDictionary(r io.Reader) {
