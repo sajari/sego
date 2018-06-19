@@ -22,7 +22,7 @@ func SegmentsToString(segs []Segment, searchMode bool) (output string) {
 	} else {
 		for _, seg := range segs {
 			output += fmt.Sprintf(
-				"%s/%s ", textSliceToString(seg.token.text), seg.token.pos)
+				"%s/%s ", Join(seg.token.text), seg.token.pos)
 		}
 	}
 	return
@@ -43,7 +43,7 @@ func tokenToString(token *Token) (output string) {
 			}
 		}
 	}
-	output += fmt.Sprintf("%s/%s ", textSliceToString(token.text), token.pos)
+	output += fmt.Sprintf("%s/%s ", Join(token.text), token.pos)
 	return
 }
 
@@ -82,13 +82,8 @@ func tokenToSlice(token *Token) (output []string) {
 			output = append(output, tokenToSlice(s.token)...)
 		}
 	}
-	output = append(output, textSliceToString(token.text))
+	output = append(output, Join(token.text))
 	return output
-}
-
-// 将多个字元拼接一个字符串输出
-func textSliceToString(text []Text) string {
-	return Join(text)
 }
 
 func Join(a []Text) string {

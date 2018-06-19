@@ -28,7 +28,7 @@ type Token struct {
 
 // 返回分词文本
 func (token *Token) Text() string {
-	return textSliceToString(token.text)
+	return Join(token.text)
 }
 
 // 返回分词在语料库中的词频

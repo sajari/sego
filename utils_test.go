@@ -7,10 +7,6 @@ import (
 	"github.com/issue9/assert"
 )
 
-/*
- * 作者:张晓明 时间:18/6/14
- */
-
 var (
 	strs = []Text{
 		Text("one"),
@@ -26,29 +22,10 @@ var (
 	}
 )
 
-func Test_textSliceToString(t *testing.T) {
-	a := textSliceToString(strs)
-	b := Join(strs)
-	assert.Equal(t, a, b)
-}
-
-func StringsJoin(b *testing.B) {
+func BenchmarkStringsJoin(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Join(strs)
 	}
-}
-
-func TextSliceToString(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		textSliceToString(strs)
-	}
-}
-
-func Test_Benchmark(t *testing.T) {
-	fmt.Println("strings.Join:")
-	fmt.Println(testing.Benchmark(StringsJoin))
-	fmt.Println("textSliceToString")
-	fmt.Println(testing.Benchmark(TextSliceToString))
 }
 
 func Test_Token_TextEquals(t *testing.T) {
@@ -130,14 +107,14 @@ func Test_Token_Split(t *testing.T) {
 	word := "卫衣女宽松拉链外套开衫韩版"
 	var segmenter Segmenter
 	segmenter.LoadDictionary("dictionary.txt")
-	segments := segmenter.InternalSegment([]byte(word),true)
-	for _,s := range segments{
-		fmt.Println(s.token.Text())
-	}
+	segments := segmenter.InternalSegment([]byte(word), true)
+	// for _, s := range segments {
+	// 	fmt.Println(s.token.Text())
+	// }
 	for _, value := range probMap {
 		for _, s := range segments {
 			if s.Token().Text() == value {
-				fmt.Println("=",value)
+				fmt.Println("=", value)
 			}
 		}
 	}
