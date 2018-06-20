@@ -55,9 +55,7 @@ func TestSegment(t *testing.T) {
 
 func TestLargeDictionary(t *testing.T) {
 	var seg Segmenter
-	if err := seg.LoadDefaultDictionary(); err != nil {
-		t.Fatal(err)
-	}
+	seg.LoadDefaultDictionary()
 
 	expect(t, "中国/ns 人口/n ", SegmentsToString(seg.Segment(
 		[]byte("中国人口")), false))
@@ -82,9 +80,7 @@ var segments []Segment
 
 func BenchmarkSegment(b *testing.B) {
 	var seg Segmenter
-	if err := seg.LoadDefaultDictionary(); err != nil {
-		b.Fatal(err)
-	}
+	seg.LoadDefaultDictionary()
 
 	file, err := os.Open("testdata/bailuyuan.txt")
 	if err != nil {

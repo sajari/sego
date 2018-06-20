@@ -1,5 +1,5 @@
 //Go中文分词
-package sego
+package sego // import "code.sajari.com/sego"
 
 import (
 	"bufio"
@@ -13,7 +13,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/sajari/sego/data"
+	"code.sajari.com/sego/data"
 )
 
 // Only read participles greater than or equal to this frequency from the dictionary file
@@ -69,14 +69,9 @@ func (seg *Segmenter) LoadDictionaryFromReader(r io.Reader) {
 }
 
 // LoadDefaultDictionary loads the default dictionary stored in data
-func (seg *Segmenter) LoadDefaultDictionary() error {
-	d, err := data.Asset("dictionary.txt")
-	if err != nil {
-		return err
-	}
-
+func (seg *Segmenter) LoadDefaultDictionary() {
+	d := data.MustAsset("dictionary.txt")
 	seg.LoadDictionaryFromReader(bytes.NewReader(d))
-	return nil
 }
 
 func (seg *Segmenter) tokenizeDictionary(r io.Reader) {
@@ -152,7 +147,7 @@ func (seg *Segmenter) processDictionary() {
 // DefaultSegmenter creates a new Segmenter with the default dictionary loaded
 func DefaultSegmenter() *Segmenter {
 	var seg Segmenter
-	_ = seg.LoadDefaultDictionary()
+	seg.LoadDefaultDictionary()
 	return &seg
 }
 
