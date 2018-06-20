@@ -16,6 +16,12 @@ Go中文分词
 go get -u github.com/huichen/sego
 ```
 
+# Building dictionary file
+```
+go get -u github.com/go-bindata/go-bindata
+go generate
+```
+
 # 使用
 
 
