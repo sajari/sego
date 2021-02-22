@@ -1,7 +1,5 @@
 package sego
 
-//go:generate go-bindata -o data/dictionary.go -pkg data -prefix data data/dictionary.txt
-
 import (
 	"github.com/adamzy/cedar-go"
 )

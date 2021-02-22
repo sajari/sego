@@ -3,7 +3,6 @@ package sego // import "code.sajari.com/sego"
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"io"
 	"math"
@@ -70,8 +69,7 @@ func (seg *Segmenter) LoadDictionaryFromReader(r io.Reader) {
 
 // LoadDefaultDictionary loads the default dictionary stored in data
 func (seg *Segmenter) LoadDefaultDictionary() {
-	d := data.MustAsset("dictionary.txt")
-	seg.LoadDictionaryFromReader(bytes.NewReader(d))
+	seg.LoadDictionaryFromReader(data.MustDictionary())
 }
 
 func (seg *Segmenter) tokenizeDictionary(r io.Reader) {
